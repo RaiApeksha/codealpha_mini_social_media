@@ -1,79 +1,57 @@
-function loadPosts() {
-    fetch('/api/posts/')
-    .then(res => res.json())
-    .then(data => {
-        let postsDiv = document.getElementById('posts');
-        postsDiv.innerHTML = '';
+console.log("MAIN JS LOADED ✅");
 
-        data.posts.forEach(post => {
-            let commentsHtml = '';
-            post.comments.forEach(c => {
-                commentsHtml += `<p><b>${c.user}</b>: ${c.text}</p>`;
-            });
-
-            postsDiv.innerHTML += `
-                <div class="post">
-                    <b>${post.user}</b>
-                    <p>${post.content}</p>
-
-                    <button onclick="likePost(${post.id})">
-                        ❤️ ${post.likes}
-                    </button>
-
-                    <div class="comments">
-                        ${commentsHtml}
-                        <input type="text" id="comment-${post.id}" placeholder="Write a comment..." />
-                        <button onclick="addComment(${post.id})">Comment</button>
-                    </div>
-                </div>
-                <hr>
-            `;
-        });
-    });
-}
-
-
-function createPost() {
-    let content = document.getElementById('postContent').value;
-
-    fetch('/api/posts/create/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ content })
-    })
-    .then(() => {
-        document.getElementById('postContent').value = '';
-        loadPosts();
-    });
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
 
 function likePost(postId) {
-    fetch('/api/posts/like/', {
+    fetch(`/api/like/${postId}/`, {
         method: 'POST',
+        credentials: 'same-origin',
         headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ post_id: postId })
+            'X-CSRFToken': getCookie('csrftoken'),
+        }
     })
     .then(res => res.json())
-    .then(() => loadPosts());
+    .then(data => {
+        const likesSpan = document.getElementById(`likes-${postId}`);
+        if (likesSpan) {
+            likesSpan.innerText = data.likes;
+        }
+    })
+    .catch(err => console.error('Like error:', err));
 }
 
-loadPosts();
 function addComment(postId) {
-    let text = document.getElementById(`comment-${postId}`).value;
+    const input = document.getElementById(`comment-${postId}`);
+    const text = input.value.trim();
 
-    fetch('/api/comments/add/', {
+    if (!text) return;
+
+    fetch(`/api/comment/${postId}/`, {
         method: 'POST',
+        credentials: 'same-origin',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
         },
-        body: JSON.stringify({
-            post_id: postId,
-            text: text
-        })
+        body: JSON.stringify({ text: text })
     })
-    .then(() => loadPosts());
+    .then(res => res.json())
+    .then(() => {
+        input.value = '';
+        location.reload(); // simple + reliable
+    })
+    .catch(err => console.error('Comment error:', err));
 }

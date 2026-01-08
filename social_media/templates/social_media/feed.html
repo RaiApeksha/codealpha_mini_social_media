@@ -1,0 +1,121 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Apeksha Social Media</title>
+    <link rel="stylesheet" href="{% static 'social_media/style.css' %}">
+</head>
+<body>
+<=====================NAVBAR========================>
+<header class="navbar">
+    <div class="nav-left">
+        <div class="profile-box">
+            <span class="profile-text">Profile</span>
+            <a href="{% url 'profile' request.user.username %}">
+                {% if request.user.profile.avatar %}
+                    <img src="{{ request.user.profile.avatar.url }}" class="profile-icon">
+                {% else %}
+                    <img src="{% static 'social_media/default_avatar.png' %}" class="profile-icon">
+                {% endif %}
+            </a>
+        </div>
+
+        <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+    </div>
+
+    <div class="nav-center">
+        <h1>Apeksha Social Media</h1>
+        <img src="{% static 'social_media/LOGO.png' %}" class="logo">
+    </div>
+</header>
+
+<================= MAIN CONTENT =================>
+<main class="container">
+    <================= CREATE POST =================>
+    <div class="post create-post">
+        <form id="post-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <textarea name="content" placeholder="What's on your mind?"></textarea>
+
+            <input type="file" name="image" accept="image/*">
+            <input type="file" name="video" accept="video/*">
+
+            <button type="submit">Post</button>
+        </form>
+    </div>
+
+    <================= POSTS FEED =================>
+    {% for post in posts %}
+    <div class="post">
+
+        <!-- POST HEADER -->
+        <div class="post-header">
+
+            <!-- Avatar + Username -->
+            <a href="{% url 'profile' post.user.username %}" style="display:flex; align-items:center; gap:8px; text-decoration:none; color:inherit;">
+                {% if post.user.profile.avatar %}
+                    <img src="{{ post.user.profile.avatar.url }}" class="feed-avatar">
+                {% else %}
+                    <img src="{% static 'social_media/default_avatar.png' %}" class="feed-avatar">
+                {% endif %}
+                <strong>{{ post.user.username }}</strong>
+            </a>
+
+            <!-- Follow / Unfollow -->
+            {% if post.user != request.user %}
+                <form method="post" action="{% url 'follow_user' %}">
+
+                    {% csrf_token %}
+                    <input type="hidden" name="user_id" value="{{ post.user.id }}">
+                    <button type="submit" class="follow-btn">
+                        {% if post.user.id in following_ids %}
+                            Unfollow
+                        {% else %}
+                            Follow
+                        {% endif %}
+                    </button>
+                </form>
+            {% endif %}
+
+        </div>
+
+        <p>{{ post.content }}</p>
+
+        {% if post.image %}
+        <div class="media-box">
+            <img src="{{ post.image.url }}" class="post-media">
+        </div>
+        {% endif %}
+
+        {% if post.video %}
+        <div class="media-box">
+            <video controls class="post-media" preload="metadata">
+                <source src="{{ post.video.url }}">
+            </video>
+        </div>
+        {% endif %}
+
+        <div class="post-actions">
+            <button onclick="likePost({{ post.id }})">
+                ❤️ <span id="likes-{{ post.id }}">{{ post.likes.count }}</span>
+            </button>
+        </div>
+
+        <!-- COMMENTS -->
+        {% for comment in post.comments.all %}
+            <p><strong>{{ comment.user.username }}:</strong> {{ comment.text }}</p>
+        {% endfor %}
+
+        <input type="text" id="comment-{{ post.id }}" placeholder="Write a comment...">
+        <button onclick="addComment({{ post.id }})">Comment</button>
+
+    </div>
+    {% endfor %}
+
+</main>
+
+<script src="{% static 'social_media/main.js' %}"></script>
+
+</body>
+</html>

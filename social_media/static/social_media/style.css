@@ -1,17 +1,324 @@
-#feed.html
-body {
-    font-family: Arial;
-    width: 500px;
-    margin: auto;
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-textarea {
+/* BODY */
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+}
+
+/* NAVBAR */
+.navbar {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+}
+
+.nav-left {
+    width: 20%;
+}
+
+.nav-center {
+    width: 60%;
+    text-align: right;
+}
+
+.profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.logo {
+    width: 80px;
+    display: block;
+    margin-top: 5px;
+}
+
+.logout-btn {
+    display: block;
+    margin-top: 8px;
+    font-size: 14px;
+}
+
+
+/* MAIN CONTAINER */
+.container {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 0 15px;
+}
+
+/* CREATE POST */
+.create-post {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.create-post textarea {
     width: 100%;
-    height: 60px;
+    height: 80px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 14px;
+    resize: none;
+    outline: none;
+}
+
+.create-post button {
+    margin-top: 10px;
+    background-color: #1877f2;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.create-post button:hover {
+    background-color: #145dbf;
+}
+/* ================= MEDIA ================= */
+
+.media-box {
+    width: 100%;
+    height: 420px;                 /* Same height for image & video */
+    border-radius: 14px;
+    margin-top: 12px;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Image + Video SAME behavior */
+.post-media,
+.media-box img,
+.media-box video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;           /* 👈 key fix */
+    background: #000;
+}
+
+
+/* FEED */
+.feed .post {
+    background: #ffff00;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.post b {
+    font-size: 14px;
+}
+
+.post p {
+    margin: 10px 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* LIKE BUTTON */
+.post button {
+    background: none;
+    border: none;
+    color: #e0245e;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* COMMENTS */
+.comments {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+
+.comments p {
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.comments input {
+    width: 100%;
+    padding: 6px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.comments button {
+    margin-top: 5px;
+    background-color: #eee;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+}
+.logout-btn {
+    background: #fff;
+    color: #1877f2;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background: #e4e6eb;
+}
+.container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
 }
 
 .post {
-    background: #f4f4f4;
-    padding: 10px;
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
-#feed.html end
+/* ================= PROFILE ================= */
+
+.profile-card {
+    max-width: 420px;
+    margin: 30px auto;
+    background: #fff;
+    padding: 24px;
+    border-radius: 18px;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 3px solid #eee;
+}
+
+.profile-card h2 {
+    margin: 8px 0;
+}
+
+.profile-card p a {
+    margin: 0 8px;
+    font-weight: 600;
+    color: #333;
+    text-decoration: none;
+}
+
+.profile-card p a:hover {
+    text-decoration: underline;
+}
+
+/* Follow Button */
+.profile-card button {
+    margin-top: 12px;
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: none;
+    background: #3897f0;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.profile-card button:hover {
+    background: #2f80ed;
+}
+
+/* ================= TABS ================= */
+
+.profile-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 25px 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    padding: 12px 0;
+}
+
+.profile-tabs a {
+    text-decoration: none;
+    color: #999;
+    font-weight: bold;
+}
+
+.profile-tabs a.active {
+    color: #000;
+    border-bottom: 2px solid #000;
+    padding-bottom: 6px;
+}
+
+/* ================= POSTS ================= */
+
+.profile-posts {
+    max-width: 700px;
+    margin: auto;
+}
+
+.post-card {
+    background: #fff;
+    padding: 14px;
+    margin-bottom: 20px;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
+/* ================= FEED AVATAR FIX ================= */
+
+.feed-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+/* Post header layout */
+.post-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+/* Username + avatar container */
+.post-header a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Prevent any image from overflowing */
+.post img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}

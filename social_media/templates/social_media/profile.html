@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ user_profile.username }} | Profile</title>
+    <link rel="stylesheet" href="{% static 'social_media/style.css' %}">
+</head>
+<body>
+
+<header class="navbar">
+    <h1>{{ user_profile.username }}</h1>
+</header>
+
+<!-- ================= PROFILE CARD ================= -->
+<div class="profile-card">
+
+    <!-- avatar/profile picture upload -->
+    <form id="avatar-form" method="post" enctype="multipart/form-data" action="{% url 'upload_avatar' %}">
+        {% csrf_token %}
+        <label for="avatar-input">
+            {% if user_profile.profile.avatar %}
+                <img src="{{ user_profile.profile.avatar.url }}" class="profile-avatar">
+            {% else %}
+                <img src="{% static 'social_media/default_avatar.png' %}" class="profile-avatar">
+            {% endif %}
+        </label>
+        <input
+            type="file"
+            id="avatar-input"
+            name="avatar"
+            style="display:none;"
+            onchange="document.getElementById('avatar-form').submit()"
+        >
+    </form>
+
+    <h2>{{ user_profile.username }}</h2>
+
+    <!-- Followers / Following -->
+    <p>
+        <a href="{% url 'followers_list' user_profile.username %}">
+            Followers: {{ followers_count }}
+        </a>
+        |
+        <a href="{% url 'following_list' user_profile.username %}">
+            Following: {{ following_count }}
+        </a>
+    </p>
+
+    {% if request.user != user_profile %}
+        <form method="post" action="/follow/">
+            {% csrf_token %}
+            <input type="hidden" name="user_id" value="{{ user_profile.id }}">
+            <button type="submit">
+                {% if is_following %}Unfollow{% else %}Follow{% endif %}
+            </button>
+        </form>
+    {% endif %}
+</div>
+
+<!-- ================= TABS ================= -->
+<div class="profile-tabs">
+    <a href="?tab=posts" class="{% if request.GET.tab != 'photos' %}active{% endif %}">
+        Posts
+    </a>
+    <a href="?tab=photos" class="{% if request.GET.tab == 'photos' %}active{% endif %}">
+        Photos
+    </a>
+</div>
+
+<!-- ================= POSTS SECTION ================= -->
+<div class="profile-posts">
+
+{% if posts %}
+    {% for post in posts %}
+        {% if request.GET.tab == 'photos' %}
+            {% if post.image %}
+                <div class="post-card">
+                    <div class="media-box">
+                        <img src="{{ post.image.url }}" class="post-image post-media">
+                    </div>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="post-card">
+                <p>{{ post.content }}</p>
+
+                {% if post.image %}
+                    <div class="media-box">
+                        <img src="{{ post.image.url }}" class="post-image post-media">
+                    </div>
+                {% endif %}
+
+                {% if post.video %}
+                    <div class="media-box">
+                        <video controls class="post-video post-media">
+                            <source src="{{ post.video.url }}">
+                        </video>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endfor %}
+{% else %}
+    <p style="text-align:center;">No posts yet</p>
+{% endif %}
+
+</div>
+
+</body>
+</html>

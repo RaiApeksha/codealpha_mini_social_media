@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+    <link rel="stylesheet" href="{% static 'social_media/style.css' %}">
+</head>
+<body>
+
+<header class="navbar">
+    <h1>Apeksha Social Media</h1>
+</header>
+
+<main class="container">
+<div class="post">
+    <h3>Create Account</h3>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Register</button>
+    </form>
+
+    <p><a href="{% url 'login' %}">Back to login</a></p>
+</div>
+</main>
+
+</body>
+</html>
